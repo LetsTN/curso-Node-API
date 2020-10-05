@@ -1,10 +1,11 @@
 import { ForecastPoint, StormGlass } from '@src/clients/stormGlass';
+import { InternalError } from '@src/util/errors/internal-error';
 
 export enum BeachPosition {
   S = 'S',
   E = 'E',
   W = 'W',
-  N = 'N'
+  N = 'N',
 }
 
 export interface Beach {
@@ -20,34 +21,46 @@ export interface TimeForecast {
   forecast: BeachForecast[];
 }
 
+export class ForecastProcessingInternalError extends InternalError {
+  constructor(message: string) {
+    super(`Unexpected error during the forecast processing: ${message}`);
+  }
+}
+
 export interface BeachForecast extends Omit<Beach, 'user'>, ForecastPoint {}
 
 export class Forecast {
   constructor(protected stormGlass = new StormGlass()) {}
 
-  public async processForecastForBeaches(beaches: Beach[]): Promise<TimeForecast[]> {
-    const pointsWithCorrectSources: BeachForecast[] = [];
+  public async processForecastForBeaches(
+    beaches: Beach[]
+  ): Promise<TimeForecast[]> {
+    try {
+      const pointsWithCorrectSources: BeachForecast[] = [];
 
-    for(const beach of beaches) {
-      const points = await this.stormGlass.fetchPoints(beach.lat, beach.lng);
-      const enrichedBeachData = points.map((e) => ({
-        ... {
-          lat: beach.lat,
-          lng: beach.lng,
-          name: beach.name,
-          position: beach.position,
-          rating: 1
-        },
-        ... e,
-      }));
+      for (const beach of beaches) {
+        const points = await this.stormGlass.fetchPoints(beach.lat, beach.lng);
+        const enrichedBeachData = points.map((e) => ({
+          ...{
+            lat: beach.lat,
+            lng: beach.lng,
+            name: beach.name,
+            position: beach.position,
+            rating: 1,
+          },
+          ...e,
+        }));
 
-      pointsWithCorrectSources.push(...enrichedBeachData);
+        pointsWithCorrectSources.push(...enrichedBeachData);
+      }
+
+      return this.maoForecastByTime(pointsWithCorrectSources);
+    } catch (err) {
+      throw new ForecastProcessingInternalError(err.message);
     }
-    
-    return this.maoForecastByTime(pointsWithCorrectSources);
   }
 
-  private maoForecastByTime(forecast: BeachForecast[]): TimeForecast[]{
+  private maoForecastByTime(forecast: BeachForecast[]): TimeForecast[] {
     const forecastByTime: TimeForecast[] = [];
 
     for (const point of forecast) {
@@ -58,7 +71,7 @@ export class Forecast {
       } else {
         forecastByTime.push({
           time: point.time,
-          forecast: [point]
+          forecast: [point],
         });
       }
     }
