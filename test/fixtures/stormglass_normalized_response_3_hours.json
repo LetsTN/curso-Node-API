@@ -7,7 +7,8 @@
   "waveHeight": 0.47,
   "windDirection": 299.45,
   "windSpeed": 100
-}, {
+}, 
+{
 	"swellDirection": 123.41,
 	"swellHeight": 0.21,
 	"swellPeriod": 3.67,
@@ -16,7 +17,8 @@
 	"waveHeight": 0.46,
 	"windDirection": 310.48,
 	"windSpeed": 100
-}, {
+}, 
+{
 	"swellDirection": 182.56,
 	"swellHeight": 0.28,
 	"swellPeriod": 3.44,
