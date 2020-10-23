@@ -15,7 +15,11 @@ jobs:
       - run: git fetch --prune --unshalow
 
       - name: Use Node.js ${{ matrix.node-version }}
+<<<<<<< HEAD
         uses: actions/setup-node@v1
+=======
+        uses: action/setup-node@v1
+>>>>>>> master
         with:
           node-version: ${{ matrix.node-version }}
       
