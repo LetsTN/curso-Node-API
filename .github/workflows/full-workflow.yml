@@ -22,7 +22,7 @@ jobs:
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.1.0
         with:
-          node-version: ${{ matrix.mongodb-version }}
+          mongodb-version: ${{ matrix.mongodb-version }}
 
       - name: Install dependencies
         run: yarn --frozen-lockfile
