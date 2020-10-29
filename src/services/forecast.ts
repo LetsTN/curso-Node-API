@@ -1,6 +1,7 @@
 import { ForecastPoint, StormGlass } from '@src/clients/stormGlass';
 import { Beach } from '@src/models/beach';
 import { InternalError } from '@src/util/errors/internal-error';
+import logger from '../../logger';
 
 export interface TimeForecast {
   time: string;
@@ -21,6 +22,8 @@ export class Forecast {
   public async processForecastForBeaches(
     beaches: Beach[]
   ): Promise<TimeForecast[]> {
+    logger.info(`Preparing the forecast for ${beaches.length} beaches`);
+
     try {
       const pointsWithCorrectSources: BeachForecast[] = [];
 
@@ -42,6 +45,7 @@ export class Forecast {
 
       return this.maoForecastByTime(pointsWithCorrectSources);
     } catch (err) {
+      logger.error(err);
       throw new ForecastProcessingInternalError(err.message);
     }
   }

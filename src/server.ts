@@ -4,6 +4,7 @@ import { Server } from '@overnightjs/core';
 import bodyParser from 'body-parser';
 import { Application } from 'express';
 import * as database from '@src/database';
+import logger from '../logger';
 
 import { ForecastController } from './controllers/forecast';
 import { BeachesController } from './controllers/beaches';
@@ -42,7 +43,7 @@ export class SetupServer extends Server {
 
   public start(): void {
     this.app.listen(this.port, () => {
-      console.info('Server listening of port: ', this.port);
+      logger.info(`Server listening of port: ${this.port}`);
     });
   }
 
