@@ -1,6 +1,6 @@
 import mongoose, { Document, Model } from 'mongoose';
 import AuthService from '@src/services/auth';
-import logger from '../../logger';
+import logger from '@src/logger';
 
 export interface User {
   _id?: string;

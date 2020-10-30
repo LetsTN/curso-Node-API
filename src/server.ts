@@ -4,7 +4,7 @@ import { Server } from '@overnightjs/core';
 import bodyParser from 'body-parser';
 import { Application } from 'express';
 import * as database from '@src/database';
-import logger from '../logger';
+import logger from '@src/logger';
 
 import { ForecastController } from './controllers/forecast';
 import { BeachesController } from './controllers/beaches';

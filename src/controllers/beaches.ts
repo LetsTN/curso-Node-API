@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { Beach } from '@src/models/beach';
 import mongoose from 'mongoose';
 import { authMiddleware } from '@src/middlewares/auth';
-import logger from '../../logger';
+import logger from '@src/logger';
 
 @Controller('beaches')
 @ClassMiddleware(authMiddleware)
