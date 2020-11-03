@@ -6,9 +6,14 @@ import { Application } from 'express';
 import * as http from 'http';
 import expressPino from 'express-pino-logger';
 import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+import * as OpenApiValidator from 'express-openapi-validator';
+import { OpenAPIV3 } from 'express-openapi-validator/dist/framework/types';
 
 import * as database from '@src/database';
 import logger from '@src/logger';
+import apiSchema from './api-schema.json';
+
 
 import { ForecastController } from './controllers/forecast';
 import { BeachesController } from './controllers/beaches';
@@ -23,6 +28,7 @@ export class SetupServer extends Server {
 
   public async init(): Promise<void> {
     this.setupExpress();
+    await this.docsSetup();
     this.setupControllers();
     await this.databaseSetup();
   }
@@ -80,5 +86,16 @@ export class SetupServer extends Server {
 
   public getApp(): Application {
     return this.app;
+  }
+
+  private async docsSetup(): Promise<void> {
+    this.app.use('/docs', swaggerUi.serve, swaggerUi.setup(apiSchema));
+    this.app.use(
+      OpenApiValidator.middleware({
+        apiSpec: apiSchema as OpenAPIV3.Document,
+        validateRequests: true,
+        validateResponses: true,
+      })
+    ); // de acordo com a documentação da versão 4.x, é assim q funciona agora
   }
 }
