@@ -13,6 +13,7 @@ import { OpenAPIV3 } from 'express-openapi-validator/dist/framework/types';
 import * as database from '@src/database';
 import logger from '@src/logger';
 import apiSchema from './api-schema.json';
+import { apiErrorValidator } from './middlewares/api-error-validator';
 
 
 import { ForecastController } from './controllers/forecast';
@@ -31,6 +32,7 @@ export class SetupServer extends Server {
     await this.docsSetup();
     this.setupControllers();
     await this.databaseSetup();
+    this.setupErrorHandlers();
   }
 
   private setupExpress(): void {
@@ -97,5 +99,9 @@ export class SetupServer extends Server {
         validateResponses: true,
       })
     ); // de acordo com a documentação da versão 4.x, é assim q funciona agora
+  }
+
+  private setupErrorHandlers(): void {
+    this.app.use(apiErrorValidator);
   }
 }
