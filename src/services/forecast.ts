@@ -2,6 +2,7 @@ import { ForecastPoint, StormGlass } from '@src/clients/stormGlass';
 import { Beach } from '@src/models/beach';
 import { InternalError } from '@src/util/errors/internal-error';
 import logger from '@src/logger';
+import { Rating } from './rating';
 
 export interface TimeForecast {
   time: string;
@@ -17,7 +18,10 @@ export class ForecastProcessingInternalError extends InternalError {
 export interface BeachForecast extends Omit<Beach, 'user'>, ForecastPoint {}
 
 export class Forecast {
-  constructor(protected stormGlass = new StormGlass()) {}
+  constructor(
+    protected stormGlass = new StormGlass(),
+    protected RatingService: typeof Rating = Rating
+  ) {}
 
   public async processForecastForBeaches(
     beaches: Beach[]
@@ -28,18 +32,9 @@ export class Forecast {
       const pointsWithCorrectSources: BeachForecast[] = [];
 
       for (const beach of beaches) {
+        const rating = new this.RatingService(beach);
         const points = await this.stormGlass.fetchPoints(beach.lat, beach.lng);
-        const enrichedBeachData = points.map((e) => ({
-          ...{
-            lat: beach.lat,
-            lng: beach.lng,
-            name: beach.name,
-            position: beach.position,
-            rating: 1,
-          },
-          ...e,
-        }));
-
+        const enrichedBeachData = this.enrichBeachData(points, beach, rating);
         pointsWithCorrectSources.push(...enrichedBeachData);
       }
 
@@ -48,6 +43,24 @@ export class Forecast {
       logger.error(err);
       throw new ForecastProcessingInternalError(err.message);
     }
+  }
+
+  private enrichBeachData(
+    points: ForecastPoint[],
+    beach: Beach,
+    rating: Rating
+  ): BeachForecast[] {
+    return points.map((point) => ({
+      ...{},
+      ...{
+        lat: beach.lat,
+        lng: beach.lng,
+        name: beach.name,
+        position: beach.position,
+        rating: rating.getRateForPoint(point),
+      },
+      ...point,
+    }));
   }
 
   private maoForecastByTime(forecast: BeachForecast[]): TimeForecast[] {
