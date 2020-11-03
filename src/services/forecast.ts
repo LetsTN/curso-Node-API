@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import { ForecastPoint, StormGlass } from '@src/clients/stormGlass';
 import { Beach } from '@src/models/beach';
 import { InternalError } from '@src/util/errors/internal-error';
@@ -26,19 +28,16 @@ export class Forecast {
   public async processForecastForBeaches(
     beaches: Beach[]
   ): Promise<TimeForecast[]> {
-    logger.info(`Preparing the forecast for ${beaches.length} beaches`);
-
     try {
-      const pointsWithCorrectSources: BeachForecast[] = [];
+      const beachForecast = await this.calculateRating(beaches);
+      const timeForecast = this.mapForecastByTime(beachForecast);
 
-      for (const beach of beaches) {
-        const rating = new this.RatingService(beach);
-        const points = await this.stormGlass.fetchPoints(beach.lat, beach.lng);
-        const enrichedBeachData = this.enrichBeachData(points, beach, rating);
-        pointsWithCorrectSources.push(...enrichedBeachData);
-      }
-
-      return this.maoForecastByTime(pointsWithCorrectSources);
+      return timeForecast.map((t) => ({
+        time: t.time,
+        // TODO Allow ordering to be dynamic
+        // Sorts the beaches by its ratings
+        forecast: _.orderBy(t.forecast, ['rating'], ['desc']),
+      }));
     } catch (err) {
       logger.error(err);
       throw new ForecastProcessingInternalError(err.message);
@@ -63,7 +62,19 @@ export class Forecast {
     }));
   }
 
-  private maoForecastByTime(forecast: BeachForecast[]): TimeForecast[] {
+  private async calculateRating(beaches: Beach[]): Promise<BeachForecast[]> {
+    const pointsWithCorrectSources: BeachForecast[] = [];
+    logger.info(`Preparing the forecast for ${beaches.length} beaches`);
+    for (const beach of beaches) {
+      const rating = new this.RatingService(beach);
+      const points = await this.stormGlass.fetchPoints(beach.lat, beach.lng);
+      const enrichedBeachData = this.enrichBeachData(points, beach, rating);
+      pointsWithCorrectSources.push(...enrichedBeachData);
+    }
+    return pointsWithCorrectSources;
+  }
+
+  private mapForecastByTime(forecast: BeachForecast[]): TimeForecast[] {
     const forecastByTime: TimeForecast[] = [];
 
     for (const point of forecast) {
