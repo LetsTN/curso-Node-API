@@ -53,20 +53,17 @@ export class Rating {
   ): boolean {
     return (
       (waveDirection === GeoPosition.N &&
-       windDirection === GeoPosition.S &&
-       this.beach.position === GeoPosition.N) ||
-
+        windDirection === GeoPosition.S &&
+        this.beach.position === GeoPosition.N) ||
       (waveDirection === GeoPosition.S &&
-       windDirection === GeoPosition.N &&
-       this.beach.position === GeoPosition.S) ||
-
+        windDirection === GeoPosition.N &&
+        this.beach.position === GeoPosition.S) ||
       (waveDirection === GeoPosition.E &&
-       windDirection === GeoPosition.W &&
-       this.beach.position === GeoPosition.E) ||
-
+        windDirection === GeoPosition.W &&
+        this.beach.position === GeoPosition.E) ||
       (waveDirection === GeoPosition.W &&
-       windDirection === GeoPosition.E &&
-       this.beach.position === GeoPosition.W)
+        windDirection === GeoPosition.E &&
+        this.beach.position === GeoPosition.W)
     );
   }
 

@@ -15,7 +15,6 @@ import logger from '@src/logger';
 import apiSchema from './api-schema.json';
 import { apiErrorValidator } from './middlewares/api-error-validator';
 
-
 import { ForecastController } from './controllers/forecast';
 import { BeachesController } from './controllers/beaches';
 import { UsersController } from './controllers/users';

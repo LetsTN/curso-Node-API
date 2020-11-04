@@ -5,7 +5,6 @@ import { CUSTOM_VALIDATION } from '@src/models/user';
 import logger from '@src/logger';
 import ApiError, { APIError } from '@src/util/errors/api-error';
 
-
 export abstract class BaseController {
   protected sendCreateUpdateErrorResponse(
     res: Response,
@@ -16,12 +15,12 @@ export abstract class BaseController {
       res.status(clientErrors.code).send(
         ApiError.format({
           code: clientErrors.code,
-          message: clientErrors.error
+          message: clientErrors.error,
         })
-      )
+      );
     } else {
       logger.error(error);
-      
+
       res
         .status(500)
         .send(ApiError.format({ code: 500, message: 'Something went wrong!' }));

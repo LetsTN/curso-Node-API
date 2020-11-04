@@ -10,9 +10,9 @@ export function apiErrorValidator(
   _: Partial<Request>,
   res: Response,
   __: NextFunction
-  ): void {
-    const errorCode = error.status || 500;
-    res
-      .status(errorCode)
-      .json(ApiError.format({ code: errorCode, message: error.message }));
-  }
+): void {
+  const errorCode = error.status || 500;
+  res
+    .status(errorCode)
+    .json(ApiError.format({ code: errorCode, message: error.message }));
+}
