@@ -85,11 +85,11 @@ e vá até [http://localhost:3000/docs/](http://localhost:3000/docs/)
 
 
 ## Roadmap
-Vá em [open issues](https://github.com/LetsTN/README-Template/issues) para uma lista de funcionalidades futuras (and issues).
+Vá em [open issues](https://github.com/LetsTN/curso-Node-API/issues) para uma lista de funcionalidades futuras (and issues).
 
 
 ## Contribua
-As contribuições são o que torna a comunidade de código aberto um lugar incrível para aprender, inspirar e criar. Quaisquer contribuições que você fizer serão ** muito apreciadas **.
+As contribuições são o que torna a comunidade de código aberto um lugar incrível para aprender, inspirar e criar. Quaisquer contribuições que você fizer serão **muito apreciadas**.
 
 Caso queira contribuir, siga esses passos:
 
