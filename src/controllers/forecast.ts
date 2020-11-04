@@ -6,8 +6,8 @@ import {
 } from '@overnightjs/core';
 import { Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
-import ApiError from '@src/util/errors/api-error';
 
+import ApiError from '@src/util/errors/api-error';
 import { Beach } from '@src/models/beach';
 import { Forecast } from '@src/services/forecast';
 import { authMiddleware } from '@src/middlewares/auth';
